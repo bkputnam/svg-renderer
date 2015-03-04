@@ -23,7 +23,7 @@ object Rasterizer {
    * return a byte array representing the rasterized
    * (rendered to bitmap-like form) image
    */
-  def rasterize(svgStr: String, mimeType: String, width: Option[Int]): Array[Byte] = {
+  def rasterize(svgStr: String, mimeType: String, width: Option[Float]): RasterizerResult = {
     
     // Adapted from: http://stackoverflow.com/questions/11234455/poor-image-quality-when-using-svgconverter-in-batik-to-convert-svg-to-png
     
@@ -33,11 +33,11 @@ object Rasterizer {
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     val transcoderOutput: TranscoderOutput = new TranscoderOutput(output)
     
-    val transcoder: Transcoder = mimeType match {
-      case "image/png" => getPngTranscoder
-      case "image/jpeg" => getJpegTranscoder
-      case "application/pdf" => getPdfTranscoder
-      case "image/svg+xml" => getSvgTranscoder
+    val (transcoder: Transcoder, extension: String) = mimeType match {
+      case "image/png" => (getPngTranscoder, "png")
+      case "image/jpeg" => (getJpegTranscoder, "jpg")
+      case "application/pdf" => (getPdfTranscoder, "pdf")
+      case "image/svg+xml" => (getSvgTranscoder, "svg")
       case _ => throw new Exception(s"Unknown mime type: '$mimeType'")
     }
     
@@ -61,7 +61,7 @@ object Rasterizer {
       output.close()
     }
     
-    return output.toByteArray()
+    return new RasterizerResult(output.toByteArray(), extension)
   }
   
   /**

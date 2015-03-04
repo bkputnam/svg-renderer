@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test Svg Uploader</title>
+		<style>
+			th {
+				text-align: left;
+			}
+		</style>
+	</head>
+	<body>
+		<form action="/highcharts-export-web/" method="post" enctype="multipart/form-data">
+			<table>
+				<tr>
+					<th>svg:</th>
+					<td><input type="file" name="svg" /></td>
+				</tr>
+				<tr>
+					<th>mime type:</th>
+					<td>
+						<select name="type">
+							<option value="image/png">image/png</option>
+							<option value="image/jpeg">image/jpeg</option>
+							<option value="application/pdf">application/pdf</option>
+							<option value="image/svg+xml">image/svg+xml</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>filename:</th>
+					<td><input type="text" name="filename" /></td>
+				</tr>
+				<tr>
+					<th>width:</th>
+					<td><input type="number" name="width" /></td>
+				</tr>
+			</table>
+			<button type="submit">Submit</button>
+		</form>
+	</body>
+</html>

@@ -6,6 +6,7 @@ import scala.util.matching.Regex
 import org.apache.batik.script.rhino.BatikSecurityController
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
+import scala.io.Source
 
 @MultipartConfig(location="/tmp",
     fileSizeThreshold=20*1024*1024, // 20 MB - The size threshold after which the file will be written to disk
@@ -14,6 +15,12 @@ import java.io.DataInputStream
 class WebServer extends HttpServlet {
   
   private val companion = WebServer
+  
+  override def doGet(request: HttpServletRequest, response: HttpServletResponse) {
+    val out = response.getOutputStream
+    out.print(companion.UPLOAD_HTML)
+    out.flush()
+  }
   
   /**
    * Handle every request coming into this server. This server
@@ -41,20 +48,22 @@ class WebServer extends HttpServlet {
       case companion.FILENAME_REGEX(fname) => fname
       case _ => "chart"
     }
-    val width: Option[Int] = try { Some(request.getParameter("width").toInt) } catch { case _: Throwable => None }
+    val width: Option[Float] = try { Some(request.getParameter("width").toFloat) } catch { case _: Throwable => None }
     
     // check for malicious attack in SVG
     if(svg.indexOfSlice("<!ENTITY") > -1 || svg.indexOfSlice("<!DOCTYPE") > -1) {
       throw new Exception("Exception is stopped, the posted SVG could contain code for a malicious attack")
     }
     
-    val rasterizedImage: Array[Byte] = Rasterizer.rasterize(svg, requestedMimeType, width)
+    val rasterizedImage: RasterizerResult = Rasterizer.rasterize(svg, requestedMimeType, width)
     
     response.setContentType(requestedMimeType)
-    response.getOutputStream.write(rasterizedImage)
+    response.setHeader("Content-Disposition", s"""attachment; filename="$filename.${rasterizedImage.extension}"""")
+    response.getOutputStream.write(rasterizedImage.bytes)
   }
 }
 
 object WebServer {
   private val FILENAME_REGEX: Regex = """(^[A-Za-z0-9\-_ ]+$)""".r
+  private val UPLOAD_HTML = Source.fromURL(getClass.getResource("/upload.html")).mkString
 }
