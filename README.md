@@ -8,9 +8,14 @@ image rasterizer.
 
 [Highcharts PHP Source (github)](https://github.com/highslide-software/highcharts.com/blob/master/exporting-server/php/php-batik/index.php)
 
-This server is configured to listen at http://[host]/highcharts-export-web
+## Setup
 
-It expects a post request using `enctype="multipart/form-data"` with the following parameters:
+The easiest way to get this running is `./gradlew deployLocal` if you already have a standard
+GlassFish server in `/opt/`. The second easiest way is `./gradlew war` and then copying/uploading
+the war file to wherever you need.
+
+This server is configured to listen at http://[host]/highcharts-export-web. It expects a post
+request using `enctype="multipart/form-data"` with the following parameters:
 
 <table>
 	<tr>
@@ -30,3 +35,9 @@ It expects a post request using `enctype="multipart/form-data"` with the followi
 		<td>The width of the returned image (optional, pulls default from svg)</td>
 	</tr>
 </table>
+
+## Repositories
+
+Main repo: http://stash.lasp.colorado.edu/projects/WEBAPPS/repos/svg-renderer/browse
+
+Github mirror: https://github.com/lasp-web/svg-renderer
