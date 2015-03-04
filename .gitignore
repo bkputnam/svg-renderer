@@ -1,4 +1,12 @@
-/build/
-/bin/
+/build
+/classes
+.project
+.classpath
+.settings/
 .cache
-/.gradle/
+.gradle/
+*.log
+*~
+/bin
+/.externalToolBuilders
+.DS_Store

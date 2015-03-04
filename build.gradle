@@ -2,16 +2,21 @@
 apply plugin: 'scala'
 apply plugin: 'war'
 apply plugin: 'jetty'
+apply plugin: 'eclipse-wtp'
 
 repositories {
     jcenter()
+	maven {
+		url "http://central.maven.org/maven2/"
+	}
 }
 
 targetCompatibility = 1.6
 
 dependencies {
-	compile "javax.servlet:servlet-api:2.5"
+	compile 'javax.servlet:javax.servlet-api:3.0.1'
     compile 'org.scala-lang:scala-library:2.11.4'
+	compile fileTree(dir: 'libs/batik', include:'*.jar')
     testCompile 'junit:junit:4.11'
     testCompile 'org.scalatest:scalatest_2.11:2.2.2'
     testRuntime 'org.scala-lang.modules:scala-xml_2.11:1.0.2'
